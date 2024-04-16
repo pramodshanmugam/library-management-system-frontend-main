@@ -5,6 +5,7 @@ export default class CreateArtifact extends Component {
   constructor(props) {
     super(props);
 
+    // Bind all the handlers to this class
     this.onChangeTitle = this.onChangeTitle.bind(this);
     this.onChangeArtist = this.onChangeArtist.bind(this);
     this.onChangeYear = this.onChangeYear.bind(this);
@@ -12,9 +13,9 @@ export default class CreateArtifact extends Component {
     this.onChangeDimensions = this.onChangeDimensions.bind(this);
     this.onChangeDescription = this.onChangeDescription.bind(this);
     this.onChangeImageURL = this.onChangeImageURL.bind(this);
-
     this.onSubmit = this.onSubmit.bind(this);
 
+    // Initial state setup
     this.state = {
         title: '',
         artist: '',
@@ -72,6 +73,7 @@ export default class CreateArtifact extends Component {
     axios.post('http://localhost:8080/api/artworks', artifact)
       .then(res => console.log(res.data));
 
+    // Reset the form after submission
     this.setState({
         title: '',
         artist: '',
@@ -88,12 +90,48 @@ export default class CreateArtifact extends Component {
       <div>
         <h3>Create Artifact</h3>
         <form onSubmit={this.onSubmit}>
-          {/* ... rest of your form fields ... */}
+          <div className="form-group">
+            <label>Title:</label>
+            <input type="text" required className="form-control"
+              value={this.state.title}
+              onChange={this.onChangeTitle} />
+          </div>
+          <div className="form-group">
+            <label>Artist:</label>
+            <input type="text" required className="form-control"
+              value={this.state.artist}
+              onChange={this.onChangeArtist} />
+          </div>
+          <div className="form-group">
+            <label>Year:</label>
+            <input type="text" required className="form-control"
+              value={this.state.year}
+              onChange={this.onChangeYear} />
+          </div>
+          <div className="form-group">
+            <label>Medium:</label>
+            <input type="text" required className="form-control"
+              value={this.state.medium}
+              onChange={this.onChangeMedium} />
+          </div>
+          <div className="form-group">
+            <label>Dimensions:</label>
+            <input type="text" required className="form-control"
+              value={this.state.dimensions}
+              onChange={this.onChangeDimensions} />
+          </div>
+          <div className="form-group">
+            <label>Description:</label>
+            <textarea required className="form-control"
+              value={this.state.description}
+              onChange={this.onChangeDescription} />
+          </div>
+          
           <div className="form-group">
             <input type="submit" value="Create Artifact" className="btn btn-primary" />
           </div>
         </form>
       </div>
-    )
+    );
   }
 }

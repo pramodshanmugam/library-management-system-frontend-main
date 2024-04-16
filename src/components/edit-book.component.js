@@ -2,119 +2,106 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 
- function CreateBook() {
-    const params = useParams();
-    console.log(params);
+function ArtifactEdit() {
+  const params = useParams();
+  const [title, setTitle] = useState('');
+  const [artist, setArtist] = useState('');
+  const [year, setYear] = useState('');
+  const [medium, setMedium] = useState('');
+  const [dimensions, setDimensions] = useState('');
+  const [description, setDescription] = useState('');
 
-const [title, setTitle] = useState('');
-const [author, setAuthor] = useState('');
-const [price, setPrice] = useState('');
-const [publisher, setPublisher] = useState('');
-const [pubdate, setPublishDate] = useState('');
-
-const fetchBookDetails = () => {
-    axios.get('http://localhost:3000/book/'+params.id)
+  useEffect(() => {
+    axios.get(`http://localhost:8080/api/artworks/${params.id}`)
       .then(response => {
-        console.log(response.data);
         setTitle(response.data.title);
-        setAuthor(response.data.author);
-        setPrice(response.data.price);
-        setPublisher(response.data.publisher);
-        setPublishDate(response.data.pubdate);
+        setArtist(response.data.artist);
+        setYear(response.data.year);
+        setMedium(response.data.medium);
+        setDimensions(response.data.dimensions);
+        setDescription(response.data.description);
       })
-      .catch(function (error) {
-        console.log(error);
-      })
-};
+      .catch(error => console.error(error));
+  }, [params.id]);
 
-useEffect(() => {
-    fetchBookDetails();}
-    , [])
-
-
-    const onSubmit = (e) => {
+  const onSubmit = e => {
     e.preventDefault();
+    const artifact = {
+      title,
+      artist,
+      year,
+      medium,
+      dimensions,
+      description
+    };
 
-    const book = {
-        title: title,
-        author: author,
-        price: price,
-        publisher: publisher,
-        pubdate: pubdate
-    }
+    axios.put(`http://localhost:8080/api/artworks/${params.id}`, artifact)
+      .then(res => console.log(res.data))
+      .catch(error => console.error(error));
 
-    console.log(book);
+    // Optionally reset form fields here if necessary
+  };
 
-    axios.put('http://localhost:3000/book/'+params.id, book)
-      .then(res => console.log(res.data));
-
-      setTitle('');
-      setAuthor('');
-      setPrice('');
-      setPublisher('');
-      setPublishDate('');
-  }
-
-    return (
-      <div>
-        <h3>Edit Book</h3>
-        <form onSubmit={onSubmit}>
-          <div className="form-group"> 
-            <label>Title: </label>
-            <input  type="text"
-                required
-                className="form-control"
-                value={title}
-                onChange={(e) => {setTitle(e.target.value)}}
-                />
-          </div>
-
-          <div className="form-group"> 
-            <label>Author: </label>
-            <input  type="text"
-                required
-                className="form-control"
-                value={author}
-                onChange={(e) => {setAuthor(e.target.value)}}
-                />
-          </div>
-
-          <div className="form-group"> 
-            <label>Price($): </label>
-            <input  type="text"
-                required
-                className="form-control"
-                value={price}
-                onChange={(e) => {setPrice(e.target.value)}}
-                />
-          </div>
-
-          <div className="form-group"> 
-            <label>Publisher: </label>
-            <input  type="text"
-                required
-                className="form-control"
-                value={publisher}
-                onChange={(e) => {setPublisher(e.target.value)}}
-                />
-          </div>
-
-          <div className="form-group"> 
-            <label>Publish Date: </label>
-            <input  type="text"
-                required
-                className="form-control"
-                value={pubdate}
-                onChange={(e) => {setPublishDate(e.target.value)}}
-                />
-          </div>
-
-          <div className="form-group">
-            <input type="submit" value="Update" className="btn btn-primary" />
-          </div>
-        </form>
-      </div>
-    );
+  return (
+    <div>
+      <h3>Edit Artifact</h3>
+      <form onSubmit={onSubmit}>
+        <div className="form-group">
+          <label>Title: </label>
+          <input type="text"
+                 className="form-control"
+                 value={title}
+                 onChange={(e) => setTitle(e.target.value)}
+          />
+        </div>
+        <div className="form-group">
+          <label>Artist: </label>
+          <input type="text"
+                 required
+                 className="form-control"
+                 value={artist}
+                 onChange={(e) => setArtist(e.target.value)}
+          />
+        </div>
+        <div className="form-group">
+          <label>Year: </label>
+          <input type="text"
+                 required
+                 className="form-control"
+                 value={year}
+                 onChange={(e) => setYear(e.target.value)}
+          />
+        </div>
+        <div className="form-group">
+          <label>Medium: </label>
+          <input type="text"
+                 className="form-control"
+                 value={medium}
+                 onChange={(e) => setMedium(e.target.value)}
+          />
+        </div>
+        <div className="form-group">
+          <label>Dimensions: </label>
+          <input type="text"
+                 className="form-control"
+                 value={dimensions}
+                 onChange={(e) => setDimensions(e.target.value)}
+          />
+        </div>
+        <div className="form-group">
+          <label>Description: </label>
+          <textarea
+                 className="form-control"
+                 value={description}
+                 onChange={(e) => setDescription(e.target.value)}
+          />
+        </div>
+        <div className="form-group">
+          <input type="submit" value="Update Artifact" className="btn btn-primary" />
+        </div>
+      </form>
+    </div>
+  );
 }
 
-export default CreateBook;
+export default ArtifactEdit;
